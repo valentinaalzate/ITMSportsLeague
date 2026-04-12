@@ -19,6 +19,18 @@ namespace SportLeague.API.Mappings
                 .ForMember(
                     dest => dest.TeamName,
                     opt => opt.MapFrom(src => src.Team.Name)); //FORMEMBER para mapear el nombre del equipo desde la entidad Player a PlayerResponseDTO
+                                                               // Referee mappings
+            CreateMap<RefereeRequestDTO, Referee>();
+            CreateMap<Referee, RefereeResponseDTO>();
+
+            // Tournament mappings
+            CreateMap<TournamentRequestDTO, Tournament>();
+            CreateMap<Tournament, TournamentResponseDTO>()
+                .ForMember(
+                    dest => dest.TeamsCount,
+                    opt => opt.MapFrom(src =>
+                        src.TournamentTeams != null ? src.TournamentTeams.Count : 0)); //condicion ternaria para contar el número de equipos inscritos en el torneo, verificando que TournamentTeams no sea nulo antes de contar
+
 
         }
     }
