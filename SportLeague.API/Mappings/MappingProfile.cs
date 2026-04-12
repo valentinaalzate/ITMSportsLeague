@@ -31,6 +31,15 @@ namespace SportLeague.API.Mappings
                     opt => opt.MapFrom(src =>
                         src.TournamentTeams != null ? src.TournamentTeams.Count : 0)); //condicion ternaria para contar el número de equipos inscritos en el torneo, verificando que TournamentTeams no sea nulo antes de contar
 
+            // Sponsor mappings
+            CreateMap<SponsorRequestDTO, Sponsor>();
+            CreateMap<Sponsor, SponsorResponseDTO>();
+
+            // TournamentSponsor mappings
+            CreateMap<TournamentSponsor, TournamentSponsorResponseDTO>()
+                .ForMember(dest => dest.TournamentName, opt => opt.MapFrom(src => src.Tournament.Name))
+                .ForMember(dest => dest.SponsorName, opt => opt.MapFrom(src => src.Sponsor.Name));
+
 
         }
     }
