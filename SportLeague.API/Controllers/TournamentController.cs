@@ -80,7 +80,7 @@ namespace SportLeague.API.Controllers
         }
 
         [HttpPatch("{id}/status")]
-        public async Task<ActionResult> UpdateStatus(int id, UpdateStatusDTO dto)
+        public async Task<ActionResult> UpdateStatus(int id, UpdateTournamentStatusDTO dto)
         {
             try
             {
