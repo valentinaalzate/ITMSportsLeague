@@ -27,6 +27,8 @@ public class LeagueDbContext : DbContext
     public DbSet<Goal> Goals => Set<Goal>();
     public DbSet<Card> Cards => Set<Card>();
 
+    public DbSet<MatchLineup> MatchLineups => Set<MatchLineup>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -312,7 +314,39 @@ public class LeagueDbContext : DbContext
                   .OnDelete(DeleteBehavior.Restrict);
         });
 
+        modelBuilder.Entity<MatchLineup>(entity =>
+        {
+            entity.HasKey(ml => ml.Id);
+            entity.Property(ml => ml.IsStarter)
+                  .IsRequired();
+            entity.Property(ml => ml.Position)
+                   .IsRequired()
+                   .HasMaxLength(100);
+            entity.Property(ml => ml.JerseyNumber)
+                   .IsRequired(false);
+            entity.Property(ml => ml.Notes)
+                   .HasMaxLength(500);
+            entity.Property(ml => ml.CreatedAt)
+                  .IsRequired();
+            entity.Property(ml => ml.UpdatedAt)
+                  .IsRequired(false);
 
+            // Relación con Match
+            entity.HasOne(ml => ml.Match)
+                  .WithMany(m => m.MatchLineups)
+                  .HasForeignKey(ml => ml.MatchId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            // Relación con Player
+            entity.HasOne(ml => ml.Player)
+                    .WithMany(p => p.MatchLineups)
+                    .HasForeignKey(ml => ml.PlayerId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            // Índice único compuesto: un jugador solo puede estar en una  alineación
+            entity.HasIndex(ml => new { ml.MatchId, ml.PlayerId })
+                  .IsUnique();
+
+        });
 
     }
 }
