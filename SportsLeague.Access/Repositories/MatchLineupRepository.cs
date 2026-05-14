@@ -29,5 +29,10 @@ namespace SportsLeague.Access.Repositories
         {
             return await _dbSet.AnyAsync(ml => ml.MatchId == matchId && ml.PlayerId == playerId);
         }
+
+        public async Task<bool> ExistsByMatchAndJerseyNumberAsync(int matchId, int jerseyNumber)
+        {
+            return await _dbSet.AnyAsync(ml => ml.MatchId == matchId && ml.JerseyNumber == jerseyNumber);
+        }
     }
 }
