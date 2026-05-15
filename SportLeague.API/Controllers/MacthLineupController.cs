@@ -33,7 +33,7 @@ namespace SportLeague.API.Controllers
                 var created = await _matchLineupService.CreateAsync(lineup);
                 var lineupWithDetails = await _matchLineupService.GetByIdAsync(created.Id);
                 var responseDto = _mapper.Map<MatchLineupResponseDTO>(lineupWithDetails);
-                return Created($"/api/match/{matchId}/lineup/{created.Id}", responseDto);
+                return CreatedAtAction(nameof(GetById), new { matchId = matchId, id = created.Id }, responseDto);
 
 
             }
@@ -41,6 +41,19 @@ namespace SportLeague.API.Controllers
             catch (KeyNotFoundException ex) { return NotFound(new { message = ex.Message }); }
             catch (InvalidOperationException ex) { return Conflict(new { message = ex.Message }); }
 
+        }
+
+        [HttpGet("lineup/{id}")]
+        public async Task<ActionResult<MatchLineupResponseDTO>> GetById(int matchId, int id)
+        {
+            try
+            {
+                var lineup = await _matchLineupService.GetByIdAsync(id);
+                if (lineup == null)
+                    return NotFound(new { message = $"Alineación con ID {id} no encontrada" });
+                return Ok(_mapper.Map<MatchLineupResponseDTO>(lineup));
+            }
+            catch (KeyNotFoundException ex) { return NotFound(new { message = ex.Message }); }
         }
 
         [HttpGet("lineup")]
